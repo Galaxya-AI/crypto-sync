@@ -23,6 +23,9 @@ from src.logging_module.logging import get_logger
 
 log = get_logger(__name__)
 
+# Binance pings the WS roughly every minute; missing three pings in a row
+# means the socket is silently dead (NAT timeout, mid-route drop). Raising
+# TimeoutError lets the supervising actor reconnect rather than block forever.
 _RECV_TIMEOUT_SECONDS: float = 180.0
 
 
@@ -120,6 +123,10 @@ class BinanceRealtimeAdapter:
             return None
 
         kline: dict[str, Any] = message["k"]
+        # Decimal(str(x)) — never Decimal(x) directly. Binance sends prices as
+        # strings precisely to avoid IEEE-754 rounding; building Decimal from
+        # the string preserves that exactness, while Decimal(float) would
+        # introduce sub-cent drift that compounds across millions of rows.
         candle: Candle = Candle(
             symbol=key.symbol,
             interval=key.interval,

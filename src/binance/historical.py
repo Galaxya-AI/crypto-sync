@@ -67,6 +67,11 @@ class BinanceHistoricalAdapter:
             end_ms=end_ms,
         )
 
+        # Wrapped in retry because Binance returns transient 429 (rate-limited)
+        # and 5xx during incident windows; without backoff a single bad minute
+        # would surface as a permanent gap-filler failure. Idempotent call: the
+        # same (symbol, interval, start, end) tuple always yields the same set
+        # of closed candles, so retries can never duplicate or skip rows.
         async for attempt in with_exponential_backoff(max_attempts=5):
             with attempt:
                 raw_klines: list[list[Any]] = await self._client.get_historical_klines(
@@ -111,6 +116,9 @@ class BinanceHistoricalAdapter:
             Parsed, typed candle with ``is_closed=True`` (REST always
             returns closed candles).
         """
+        # Decimal(str(...)) keeps the exact decimal representation Binance
+        # serializes; Decimal(float) would silently introduce IEEE-754 noise.
+        # is_closed is hard-coded True: REST never returns the in-progress bar.
         candle: Candle = Candle(
             symbol=key.symbol,
             interval=key.interval,
