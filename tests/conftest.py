@@ -11,10 +11,9 @@ from __future__ import annotations
 import time
 
 import pytest
+from _helpers import FakeMarket, FakeStorage
 
 from src.core.events import StreamKey
-
-from _helpers import FakeMarket, FakeStorage
 
 
 @pytest.fixture

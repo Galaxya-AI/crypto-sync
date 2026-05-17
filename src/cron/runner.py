@@ -15,12 +15,11 @@ from __future__ import annotations
 import asyncio
 import signal
 
-from src.config import Settings, get_settings
-
 from binance import AsyncClient
 from src.binance.historical import BinanceHistoricalAdapter
 from src.binance.market import BinanceMarketDataAdapter
 from src.binance.realtime import BinanceRealtimeAdapter
+from src.config import Settings, get_settings
 from src.core.gap_filler import GapFiller
 from src.logging_module.logging import configure_logging, get_logger
 from src.mariadb.gap_detector import GapDetector

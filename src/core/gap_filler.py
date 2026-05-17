@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from typing import Final
 
-from src.core.events import INTERVAL_MS, StreamInfo, StreamKey, StreamStatus
+from src.core.events import INTERVAL_MS, Candle, StreamInfo, StreamKey, StreamStatus
 from src.core.ports import MarketDataPort, StoragePort
 from src.logging_module.logging import get_logger
 from src.mariadb.gap_detector import Gap, GapDetector
@@ -111,7 +111,7 @@ class GapFiller:
 
     async def _fetch_and_write(self, key: StreamKey, start_ms: int, end_ms: int) -> int:
         """Stream candles in ``[start_ms, end_ms]`` from market into storage."""
-        batch: list = []
+        batch: list[Candle] = []
         total: int = 0
         async for candle in self._market.fetch_historical(
             key=key,

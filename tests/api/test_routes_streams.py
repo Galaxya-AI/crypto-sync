@@ -7,12 +7,12 @@ so we exercise the routes through TestClient without spinning up MariaDB.
 from __future__ import annotations
 
 import pytest
+from _helpers import FakeMarket, FakeStorage
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from src.api.routes_streams import router as streams_router
 from src.core.stream_supervisor import Supervisor
-from _helpers import FakeMarket, FakeStorage
 
 
 @pytest.fixture

@@ -10,10 +10,10 @@ import asyncio
 import contextlib
 
 import pytest
+from _helpers import FakeMarket, FakeStorage, make_candle
 
 from src.core.events import StreamKey
 from src.core.stream_actor import StreamActor
-from _helpers import FakeMarket, FakeStorage, make_candle
 
 
 @pytest.mark.asyncio

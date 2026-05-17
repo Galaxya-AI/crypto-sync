@@ -9,6 +9,7 @@ Secrets are wrapped in SecretStr so they are masked when logged or
 printed by accident. get_settings() is cached so the singleton is
 reused across the process.
 """
+
 from __future__ import annotations
 
 from functools import lru_cache

@@ -11,6 +11,7 @@ from __future__ import annotations
 import asyncio
 
 import pytest
+from _helpers import FakeMarket, FakeStorage
 
 from src.core.events import StreamKey, StreamStatus
 from src.core.stream_supervisor import (
@@ -18,7 +19,6 @@ from src.core.stream_supervisor import (
     StreamNotFoundError,
     Supervisor,
 )
-from _helpers import FakeMarket, FakeStorage
 
 
 @pytest.mark.asyncio

@@ -18,7 +18,6 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
-from src.config import Settings, get_settings
 
 from binance import AsyncClient
 from src.api.rate_limit import build_limiter, install_rate_limiter
@@ -28,6 +27,7 @@ from src.api.schemas import HealthResponse
 from src.binance.historical import BinanceHistoricalAdapter
 from src.binance.market import BinanceMarketDataAdapter
 from src.binance.realtime import BinanceRealtimeAdapter
+from src.config import Settings, get_settings
 from src.core.stream_supervisor import Supervisor
 from src.logging_module.logging import configure_logging, get_logger
 from src.mariadb.migrator import Migrator
