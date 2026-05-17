@@ -9,17 +9,18 @@ Wires only what the cron needs: the Binance client, the MariaDB
 writer, the gap detector and the gap filler. Listens for SIGTERM
 and SIGINT for a graceful shutdown of every resource on exit.
 """
+
 from __future__ import annotations
 
 import asyncio
 import signal
 
-from binance import AsyncClient
+from src.config import Settings, get_settings
 
+from binance import AsyncClient
 from src.binance.historical import BinanceHistoricalAdapter
 from src.binance.market import BinanceMarketDataAdapter
 from src.binance.realtime import BinanceRealtimeAdapter
-from src.config import Settings, get_settings
 from src.core.gap_filler import GapFiller
 from src.logging_module.logging import configure_logging, get_logger
 from src.mariadb.gap_detector import GapDetector

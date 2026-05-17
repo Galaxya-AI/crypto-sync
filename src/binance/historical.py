@@ -8,6 +8,7 @@ Relies on binance.AsyncClient.get_historical_klines, which already
 paginates over Binance's 1000-candle response limit. Failures are
 wrapped in the shared tenacity retry policy from src/utils/retry.py.
 """
+
 from __future__ import annotations
 
 from collections.abc import AsyncIterator
@@ -15,7 +16,6 @@ from decimal import Decimal
 from typing import Any
 
 from binance import AsyncClient
-
 from src.core.events import Candle, StreamKey
 from src.logging_module.logging import get_logger
 from src.utils.retry import with_exponential_backoff

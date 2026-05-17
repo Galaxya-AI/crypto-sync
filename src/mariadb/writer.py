@@ -9,6 +9,7 @@ Upserts use INSERT ... ON DUPLICATE KEY UPDATE keyed on close_time:
 one round-trip instead of SELECT-then-INSERT, and idempotent against
 duplicate writes from the gap filler.
 """
+
 from __future__ import annotations
 
 import re

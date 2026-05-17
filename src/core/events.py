@@ -9,41 +9,41 @@ Also exposes INTERVAL_MS, the lookup table that maps Binance kline
 intervals to their duration in milliseconds. Used by the gap filler
 to compute expected spacing between consecutive candles.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
 from decimal import Decimal
-from enum import Enum
+from enum import StrEnum
 from typing import Final
-
 
 _MIN_MS: Final[int] = 60_000
 _HOUR_MS: Final[int] = 60 * _MIN_MS
 _DAY_MS: Final[int] = 24 * _HOUR_MS
 
 INTERVAL_MS: Final[dict[str, int]] = {
-    "1s":  1_000,
-    "1m":  1 * _MIN_MS,
-    "3m":  3 * _MIN_MS,
-    "5m":  5 * _MIN_MS,
+    "1s": 1_000,
+    "1m": 1 * _MIN_MS,
+    "3m": 3 * _MIN_MS,
+    "5m": 5 * _MIN_MS,
     "15m": 15 * _MIN_MS,
     "30m": 30 * _MIN_MS,
-    "1h":  1 * _HOUR_MS,
-    "2h":  2 * _HOUR_MS,
-    "4h":  4 * _HOUR_MS,
-    "6h":  6 * _HOUR_MS,
-    "8h":  8 * _HOUR_MS,
+    "1h": 1 * _HOUR_MS,
+    "2h": 2 * _HOUR_MS,
+    "4h": 4 * _HOUR_MS,
+    "6h": 6 * _HOUR_MS,
+    "8h": 8 * _HOUR_MS,
     "12h": 12 * _HOUR_MS,
-    "1d":  1 * _DAY_MS,
-    "3d":  3 * _DAY_MS,
-    "1w":  7 * _DAY_MS,
-    "1M":  30 * _DAY_MS,  # approximation; Binance counts calendar months
+    "1d": 1 * _DAY_MS,
+    "3d": 3 * _DAY_MS,
+    "1w": 7 * _DAY_MS,
+    "1M": 30 * _DAY_MS,  # approximation; Binance counts calendar months
 }
 """Milliseconds per Binance kline interval. Used by gap detection to compute
 the expected spacing between two consecutive ``close_time`` values."""
 
 
-class StreamStatus(str, Enum):
+class StreamStatus(StrEnum):
     """Lifecycle status of a (symbol, interval) stream."""
 
     ACTIVE = "active"

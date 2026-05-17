@@ -5,6 +5,7 @@ dashboards, batch jobs) hit this endpoint to fetch historical data without
 talking to MariaDB directly. Rate-limiting is inherited from the global
 slowapi limiter.
 """
+
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Query, Request, status

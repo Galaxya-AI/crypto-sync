@@ -8,6 +8,7 @@ which makes it easy to swap a real adapter for a mock in tests.
 Two ports are defined: MarketDataPort for the candle source and
 StoragePort for persistence. New ports go here as the domain grows.
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

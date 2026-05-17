@@ -11,6 +11,7 @@ Acts as a belt-and-suspenders layer on top of the actor: the actor
 self-heals on disconnect, but a silent zombie WebSocket would leave
 durable holes that this job closes deterministically.
 """
+
 from __future__ import annotations
 
 from typing import Final

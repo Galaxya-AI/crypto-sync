@@ -8,6 +8,7 @@ Errors raised by the supervisor are mapped to standard HTTP statuses:
 409 Conflict when the stream is already active, 404 Not Found when it
 does not exist.
 """
+
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Request, status

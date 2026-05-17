@@ -10,15 +10,17 @@ The cron scheduler is not started here. It runs in its own container
 (see src/cron/runner.py) so it stays a single instance regardless of
 how many uvicorn workers serve the API.
 """
+
 from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from binance import AsyncClient
 from fastapi import FastAPI
+from src.config import Settings, get_settings
 
+from binance import AsyncClient
 from src.api.rate_limit import build_limiter, install_rate_limiter
 from src.api.routes_ohlcv import router as ohlcv_router
 from src.api.routes_streams import router as streams_router
@@ -26,17 +28,12 @@ from src.api.schemas import HealthResponse
 from src.binance.historical import BinanceHistoricalAdapter
 from src.binance.market import BinanceMarketDataAdapter
 from src.binance.realtime import BinanceRealtimeAdapter
-from src.config import Settings, get_settings
 from src.core.stream_supervisor import Supervisor
 from src.logging_module.logging import configure_logging, get_logger
 from src.mariadb.migrator import Migrator
 from src.mariadb.writer import MariaDBWriter
 
-_MIGRATIONS_DIR: Path = (
-    Path(__file__).resolve().parents[1]
-    / "mariadb"
-    / "migrations"
-)
+_MIGRATIONS_DIR: Path = Path(__file__).resolve().parents[1] / "mariadb" / "migrations"
 
 
 @asynccontextmanager

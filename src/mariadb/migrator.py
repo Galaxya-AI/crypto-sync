@@ -8,6 +8,7 @@ Files must be named YYYYMMDDHHMMSS_snake_name.sql so the alphabetical
 sort matches the chronological one. Each file runs inside a
 transaction so a partial failure rolls the whole file back.
 """
+
 from __future__ import annotations
 
 import re
@@ -96,10 +97,9 @@ class Migrator:
 
     async def _load_applied(self) -> set[str]:
         """Return the set of filenames already recorded in the tracking table."""
-        async with self._pool.acquire() as conn:
-            async with conn.cursor() as cur:
-                await cur.execute("SELECT filename FROM schema_migrations;")
-                rows: list[tuple[str]] = await cur.fetchall()
+        async with self._pool.acquire() as conn, conn.cursor() as cur:
+            await cur.execute("SELECT filename FROM schema_migrations;")
+            rows: list[tuple[str]] = await cur.fetchall()
         applied: set[str] = {row[0] for row in rows}
         return applied
 
@@ -174,10 +174,9 @@ class Migrator:
         int
             Milliseconds since epoch, as reported by MariaDB's ``UTC_TIMESTAMP``.
         """
-        async with self._pool.acquire() as conn:
-            async with conn.cursor() as cur:
-                await cur.execute("SELECT UNIX_TIMESTAMP(UTC_TIMESTAMP(3)) * 1000;")
-                row: tuple[float] | None = await cur.fetchone()
+        async with self._pool.acquire() as conn, conn.cursor() as cur:
+            await cur.execute("SELECT UNIX_TIMESTAMP(UTC_TIMESTAMP(3)) * 1000;")
+            row: tuple[float] | None = await cur.fetchone()
         now_ms: int = int(row[0]) if row is not None else 0
         return now_ms
 

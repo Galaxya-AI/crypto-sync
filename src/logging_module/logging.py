@@ -8,6 +8,7 @@ Loki, Datadog or Elasticsearch can parse it without custom rules.
 configure_logging() is called once at application startup; after
 that, any module obtains a ready-to-use logger via get_logger.
 """
+
 from __future__ import annotations
 
 import logging
@@ -19,6 +20,7 @@ import structlog
 from structlog.stdlib import BoundLogger
 
 LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO").upper()
+
 
 def configure_logging(level: str = "INFO") -> None:
     """Configure structlog + stdlib logging to emit JSON to stdout.

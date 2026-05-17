@@ -10,6 +10,7 @@ outage are filled before live ingestion resumes.
 The actor holds no module-level state. Its lifetime equals the
 lifetime of the asyncio task that runs its run() coroutine.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -68,7 +69,7 @@ class StreamActor:
             except asyncio.CancelledError:
                 log.info("actor_cancelled", symbol=self._key.symbol, interval=self._key.interval)
                 raise
-            except Exception as error:  # noqa: BLE001
+            except Exception as error:
                 log.exception(
                     "actor_crashed_reconnecting",
                     symbol=self._key.symbol,

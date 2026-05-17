@@ -9,6 +9,7 @@ Reconnection is delegated to the caller (the stream actor) so the full
 lifecycle of a stream stays in one place: bootstrap, live, crash,
 reconnect, repeat.
 """
+
 from __future__ import annotations
 
 import asyncio
@@ -17,7 +18,6 @@ from decimal import Decimal
 from typing import Any
 
 from binance import AsyncClient, BinanceSocketManager
-
 from src.core.events import Candle, StreamKey
 from src.logging_module.logging import get_logger
 

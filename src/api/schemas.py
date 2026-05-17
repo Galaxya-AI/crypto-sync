@@ -8,6 +8,7 @@ from src/core/events.py.
 Symbol normalization and interval whitelisting happen here so invalid
 values are rejected before reaching the supervisor.
 """
+
 from __future__ import annotations
 
 from pydantic import BaseModel, Field, field_validator
@@ -16,9 +17,22 @@ from src.core.events import StreamInfo, StreamStatus
 
 _ALLOWED_INTERVALS: frozenset[str] = frozenset(
     {
-        "1s", "1m", "3m", "5m", "15m", "30m",
-        "1h", "2h", "4h", "6h", "8h", "12h",
-        "1d", "3d", "1w", "1M",
+        "1s",
+        "1m",
+        "3m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "4h",
+        "6h",
+        "8h",
+        "12h",
+        "1d",
+        "3d",
+        "1w",
+        "1M",
     }
 )
 
@@ -155,17 +169,17 @@ class CandleResponse(BaseModel):
             Wire DTO ready to be returned by FastAPI.
         """
         response: CandleResponse = cls(
-            open_time=candle.open_time,           # type: ignore[attr-defined]
-            close_time=candle.close_time,         # type: ignore[attr-defined]
-            open=str(candle.open),                # type: ignore[attr-defined]
-            high=str(candle.high),                # type: ignore[attr-defined]
-            low=str(candle.low),                  # type: ignore[attr-defined]
-            close=str(candle.close),              # type: ignore[attr-defined]
-            volume=str(candle.volume),            # type: ignore[attr-defined]
-            quote_volume=str(candle.quote_volume),                       # type: ignore[attr-defined]
-            num_trades=candle.num_trades,                                # type: ignore[attr-defined]
-            taker_buy_base_volume=str(candle.taker_buy_base_volume),     # type: ignore[attr-defined]
-            taker_buy_quote_volume=str(candle.taker_buy_quote_volume),   # type: ignore[attr-defined]
-            is_closed=candle.is_closed,                                  # type: ignore[attr-defined]
+            open_time=candle.open_time,  # type: ignore[attr-defined]
+            close_time=candle.close_time,  # type: ignore[attr-defined]
+            open=str(candle.open),  # type: ignore[attr-defined]
+            high=str(candle.high),  # type: ignore[attr-defined]
+            low=str(candle.low),  # type: ignore[attr-defined]
+            close=str(candle.close),  # type: ignore[attr-defined]
+            volume=str(candle.volume),  # type: ignore[attr-defined]
+            quote_volume=str(candle.quote_volume),  # type: ignore[attr-defined]
+            num_trades=candle.num_trades,  # type: ignore[attr-defined]
+            taker_buy_base_volume=str(candle.taker_buy_base_volume),  # type: ignore[attr-defined]
+            taker_buy_quote_volume=str(candle.taker_buy_quote_volume),  # type: ignore[attr-defined]
+            is_closed=candle.is_closed,  # type: ignore[attr-defined]
         )
         return response

@@ -9,6 +9,7 @@ This adapter is passive: it only reports gaps. Closing them is the
 responsibility of GapFiller, which combines this detector with the
 historical Binance adapter.
 """
+
 from __future__ import annotations
 
 import re
@@ -104,10 +105,9 @@ class GapDetector:
           AND gap_ms > %s
         ORDER BY prev_close_time;
         """
-        async with self._pool.acquire() as conn:
-            async with conn.cursor() as cur:
-                await cur.execute(sql, (expected_interval_ms,))
-                rows: list[tuple[int, int, int]] = await cur.fetchall()
+        async with self._pool.acquire() as conn, conn.cursor() as cur:
+            await cur.execute(sql, (expected_interval_ms,))
+            rows: list[tuple[int, int, int]] = await cur.fetchall()
 
         gaps: list[Gap] = []
         for prev_close, next_close, gap_ms in rows:

@@ -10,6 +10,7 @@ Lifecycle is owned by the caller (the cron container's runner):
 start at boot, shutdown on SIGTERM. Jobs registered with the same
 name are deduplicated and capped at one concurrent execution.
 """
+
 from __future__ import annotations
 
 import os
@@ -86,6 +87,7 @@ class CronScheduler:
         every_seconds : int
             Heartbeat period.
         """
+
         async def _touch() -> None:
             file_path: Path = Path(path)
             file_path.touch(exist_ok=True)

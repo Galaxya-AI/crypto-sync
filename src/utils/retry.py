@@ -9,6 +9,7 @@ Concentrating the policy here means tuning it later (more attempts,
 different jitter, finer exception filtering) only requires editing
 this file. Currently used by the historical Binance adapter.
 """
+
 from __future__ import annotations
 
 from collections.abc import Callable

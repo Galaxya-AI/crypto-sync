@@ -10,14 +10,16 @@ The supervisor is core code: it talks to MarketDataPort and
 StoragePort, never to concrete adapters. The same supervisor works
 in tests against in-memory mocks of those ports.
 """
+
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import time
 
-from src.core.stream_actor import StreamActor
 from src.core.events import StreamInfo, StreamKey, StreamStatus
 from src.core.ports import MarketDataPort, StoragePort
+from src.core.stream_actor import StreamActor
 from src.logging_module.logging import get_logger
 
 log = get_logger(__name__)
@@ -113,10 +115,8 @@ class Supervisor:
             raise StreamNotFoundError(f"{key.symbol}/{key.interval} is not active")
 
         task.cancel()
-        try:
+        with contextlib.suppress(asyncio.CancelledError):
             await task
-        except asyncio.CancelledError:
-            pass
 
         stopped_at: int = int(time.time() * 1000)
         await self._storage.mark_stream_stopped(key, stopped_at)
@@ -148,10 +148,8 @@ class Supervisor:
         for task in tasks:
             task.cancel()
         for task in tasks:
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await task
-            except asyncio.CancelledError:
-                pass
         log.info("supervisor_shutdown", cancelled=len(tasks))
 
     async def restore_active_streams(self) -> int:

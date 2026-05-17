@@ -8,6 +8,7 @@ rest of the codebase depends on a single port.
 Swapping providers later (Coinbase, Kraken) means writing equivalent
 adapters and a new composite; nothing in core/ has to change.
 """
+
 from __future__ import annotations
 
 from collections.abc import AsyncIterator
