@@ -1,0 +1,117 @@
+x-app-env: &app-env
+  BINANCE_API_KEY: ${BINANCE_API_KEY}
+  BINANCE_SECRET_KEY: ${BINANCE_SECRET_KEY}
+  DB_HOST: mariadb
+  DB_PORT: 3306
+  DB_NAME: ${DB_NAME}
+  DB_USER: ${DB_USER}
+  DB_PASSWORD: ${DB_PASSWORD}
+  LOG_LEVEL: ${LOG_LEVEL:-INFO}
+
+services:
+  mariadb:
+    image: mariadb:11.4
+    container_name: crypto-sync-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: crypto-sync-api
+    restart: unless-stopped
+    stop_grace_period: 30s
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      <<: *app-env
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+    command: ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--timeout-graceful-shutdown", "25"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app/src:ro
+
+  cron:
+    build: .
+    container_name: crypto-sync-cron
+    restart: unless-stopped
+    stop_grace_period: 30s
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+    environment: *app-env
+    command: ["python", "-m", "src.cron.runner"]
+    volumes:
+      - ./src:/app/src:ro
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/cron-alive && [ $$(($$(date +%s) - $$(stat -c %Y /tmp/cron-alive))) -lt 90 ]"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  backup:
+    build: ./deploy/backup
+    container_name: crypto-sync-backup
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-eu-west-3}
+    volumes:
+      - mariadb_backups:/backups
+
+  # Optional Grafana — start with: docker compose --profile grafana up
+  # Off by default so dev environments stay light.
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: crypto-sync-grafana
+    restart: unless-stopped
+    profiles: ["grafana"]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      # Provisioning: MariaDB datasource and the dashboards provider config
+      # are read at boot from this folder.
+      - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro
+      # Dashboard JSON files: the dashboards provider scans this folder every
+      # 30 s and applies any change without restarting Grafana.
+      - ./deploy/grafana/btc-prices.json:/etc/grafana/dashboards/btc-prices.json:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mariadb
+
+volumes:
+  mariadb_data:
+  mariadb_backups:
+  grafana_data:

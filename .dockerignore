@@ -1,0 +1,17 @@
+.git
+.gitignore
+.env
+.env.local
+.venv
+venv
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.mypy_cache
+.ruff_cache
+tests/
+*.md
+test.ipynb
+.ipynb_checkpoints
+.DS_Store
