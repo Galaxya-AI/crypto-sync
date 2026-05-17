@@ -18,7 +18,7 @@ from src.core.stream_supervisor import (
     StreamNotFoundError,
     Supervisor,
 )
-from tests.conftest import FakeMarket, FakeStorage
+from _helpers import FakeMarket, FakeStorage
 
 
 @pytest.mark.asyncio

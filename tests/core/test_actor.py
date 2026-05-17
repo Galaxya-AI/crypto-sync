@@ -13,7 +13,7 @@ import pytest
 
 from src.core.events import StreamKey
 from src.core.stream_actor import StreamActor
-from tests.conftest import FakeMarket, FakeStorage, make_candle
+from _helpers import FakeMarket, FakeStorage, make_candle
 
 
 @pytest.mark.asyncio

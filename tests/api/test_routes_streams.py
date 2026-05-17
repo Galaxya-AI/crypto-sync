@@ -12,7 +12,7 @@ from fastapi.testclient import TestClient
 
 from src.api.routes_streams import router as streams_router
 from src.core.stream_supervisor import Supervisor
-from tests.conftest import FakeMarket, FakeStorage
+from _helpers import FakeMarket, FakeStorage
 
 
 @pytest.fixture
